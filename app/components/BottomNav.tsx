@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useState } from 'react';
-import { House, Play, ListTodo, ChartColumnBig } from 'lucide-react';
+import { Play, ListTodo, Trophy } from 'lucide-react';
 
 const BottomNav = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const navItems = [
-  
     { id: 0, icon: ListTodo },
     { id: 1, icon: Play },
-    { id: 2, icon: ChartColumnBig }
+    { id: 2, icon: Trophy }
   ];
 
   return (

@@ -26,7 +26,7 @@ export default function RankCard({ rank, name, coins, profileSrc, className = ""
             <ProfileImage src={profileSrc} size="md" />
             <div className="flex-1 min-w-0">
                 <p className="text-gray-900 font-semibold truncate">{name}</p>
-                <p className="text-sm text-gray-500 truncate">{coins.toLocaleString()} points</p>
+                <p className="text-sm text-gray-500 truncate">🪙 {coins.toLocaleString()}</p>
             </div>
             {medal && (
                 <div className="ml-auto text-2xl select-none" aria-label={`Rank ${rank} medal`}>
