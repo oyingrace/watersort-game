@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'LuckiestGuy';
+  src: url('/fonts/LuckiestGuy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Geist", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 80%;
+  overflow-x: hidden;
+}
+
+/* Headings use LuckiestGuy font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'LuckiestGuy', cursive;
+}
+
+/* Normal text uses Geist (already set in body) */
+p, span, div, a, button, input, textarea, label {
+  font-family: 'Geist', sans-serif;
+}
