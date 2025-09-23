@@ -25,20 +25,20 @@ export interface LevelGenerationParams {
   seed?: number;
 }
 
-// Color palette with simple color names like watersortpuzzle
+
 const COLOR_PALETTE = [
-  'red',
-  'blue', 
-  'yellow',
-  'green',
-  'purple',
-  'lightgreen',
-  'lightblue',
-  'orange',
-  'brown',
-  'pink',
-  'cyan',
-  'magenta'
+  '#4d7111',
+  '#e23c64', 
+  '#b0183d',
+  '#00a8aa',
+  '#f09410',
+  '#6e3482',
+  '#3b2621',
+  '#e1ff00',
+  '#ccffbc',
+  '#d9f20c',
+  '#fd6c01',
+  '#d3de7e'
 ];
 
 // Difficulty progression configuration - simplified like watersortpuzzle

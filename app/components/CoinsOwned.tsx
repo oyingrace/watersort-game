@@ -24,8 +24,10 @@ const CoinsOwned = ({
   return (
     <div className={`flex items-center ${className}`}>
       <Card className="font-semibold border-primary-purple text-gray-800 -ml-2 z-0 px-2 py-2">
-        {formatAmount(amount)}
-        {showText && ' pts'}
+        <div className="flex items-center gap-2">
+          <img src="/images/coin.png" alt="Coin" className="h-4 w-4" />
+          <span>{formatAmount(amount)}</span>
+        </div>
       </Card>
     </div>
   );

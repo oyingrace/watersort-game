@@ -10,6 +10,8 @@ import { X } from 'lucide-react';
 import Reset from '../components/Reset';
 import UndoMove from '../components/UndoMove';
 import Hint from '../components/Hint';
+import Loader from '@/app/components/Loader';
+import LevelWin from '../components/LevelWin';
 
 interface LevelPageProps {
   params: Promise<{ id: string }>;
@@ -24,6 +26,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   const [gameWon, setGameWon] = useState(false);
   const [showQuit, setShowQuit] = useState(false);
   const [hintsLeft, setHintsLeft] = useState<number>(5);
+  const [undosLeft, setUndosLeft] = useState<number>(5);
 
   // unwrap params (Next.js: params is now a Promise)
   const unwrappedParams = React.use(params);
@@ -40,6 +43,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       const config = generateLevel({ levelNumber });
       setLevelConfig(config);
       setGameWon(false);
+      setUndosLeft(5);
     } catch (err) {
       setError('Failed to generate level');
       console.error('Level generation error:', err);
@@ -70,6 +74,13 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
     } catch (_) {}
   };
 
+  const handleUndo = () => {
+    if (undosLeft <= 0) return;
+    const didUndo = boardRef.current?.undoLastMove() ?? false;
+    if (!didUndo) return;
+    setUndosLeft(prev => prev - 1);
+  };
+
   const handleLevelComplete = () => {
     setGameWon(true);
     // Level completed - no automatic progression
@@ -94,6 +105,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       const newConfig = generateLevel({ levelNumber });
       setLevelConfig(newConfig);
       setGameWon(false);
+      setUndosLeft(5);
     }
   };
 
@@ -114,11 +126,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen w-full bg-primary-purple flex items-center justify-center">
-        <div className="text-white text-xl">Loading Level {levelNumber}...</div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error || !levelConfig) {
@@ -132,6 +140,15 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
           Back to Level Select
         </button>
       </div>
+    );
+  }
+
+  if (gameWon) {
+    return (
+      <LevelWin
+        onShare={() => {}}
+        onNext={handleNextLevel}
+      />
     );
   }
 
@@ -151,7 +168,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
 
       {/* Top-right controls */}
       <div className="absolute top-4 right-4 z-40 flex gap-2">
-        <UndoMove onClick={() => boardRef.current?.undoLastMove()} />
+        <UndoMove onClick={handleUndo} disabled={undosLeft <= 0} remaining={undosLeft} />
         <Reset onClick={handleRestart} />
         <Hint onClick={handleUseHint} disabled={hintsLeft <= 0} remaining={hintsLeft} />
       </div>

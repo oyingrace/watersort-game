@@ -7,7 +7,7 @@ import { BOARD_LAYOUT, TUBE_DIMENSIONS, GAME_ANIM } from '@/lib/gameConstants';
 import { isValidPour, countPourableSegments } from '@/lib/gameHelpers';
 
 export interface GameBoardHandle {
-  undoLastMove: () => void;
+  undoLastMove: () => boolean; // returns true if an undo occurred
   performHintMove: () => boolean; // returns true if a move was made
 }
 
@@ -57,6 +57,7 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ level, levelCon
   // Expose APIs
   useImperativeHandle(ref, () => ({
     undoLastMove: () => {
+      let didUndo = false;
       setHistory(prev => {
         if (prev.length === 0) return prev;
         const nextHistory = [...prev];
@@ -66,8 +67,10 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ level, levelCon
         setOverrides({});
         setDrainOverlays({});
         setFillOverlays({});
+        didUndo = true;
         return nextHistory;
       });
+      return didUndo;
     },
     performHintMove: () => {
       // Find all valid pours and score them

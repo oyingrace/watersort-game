@@ -15,7 +15,13 @@ const ShareButton: React.FC<ShareButtonProps> = ({ className = '', ...props }) =
       className={cn('bg-primary-purple text-white', className)}
       {...props}
     >
-      Share (+50 pts)
+      <span className="flex items-center gap-2">
+        <span>Share</span>
+        <span className="flex items-center gap-1">
+          <img src="/images/coin.png" alt="Coin" className="h-4 w-4" />
+          <span>+10</span>
+        </span>
+      </span>
     </Button>
   );
 };
