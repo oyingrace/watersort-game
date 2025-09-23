@@ -41,13 +41,13 @@ const COLOR_PALETTE = [
   'magenta'
 ];
 
-// Difficulty progression configuration
+// Difficulty progression configuration - simplified like watersortpuzzle
 const DIFFICULTY_CONFIG = {
-  easy: { colors: 3, emptyTubes: 3, moves: 20 },
+  easy: { colors: 3, emptyTubes: 2, moves: 20 },
   medium: { colors: 4, emptyTubes: 2, moves: 25 },
   hard: { colors: 5, emptyTubes: 2, moves: 30 },
-  'very-hard': { colors: 6, emptyTubes: 1, moves: 35 },
-  expert: { colors: 8, emptyTubes: 1, moves: 40 },
+  'very-hard': { colors: 6, emptyTubes: 2, moves: 35 },
+  expert: { colors: 8, emptyTubes: 2, moves: 40 },
 };
 
 /**
@@ -88,50 +88,83 @@ class SeededRandom {
 }
 
 /**
- * Determine difficulty level based on level number with subtle spikes
+ * Determine difficulty level based on level number - mixed progression
  */
 function getDifficultyLevel(levelNumber: number): keyof typeof DIFFICULTY_CONFIG {
-  // Check for difficulty spikes first
-  if (isDifficultySpike(levelNumber)) {
-    return getSpikeDifficulty(levelNumber);
+  // Create a mixed progression where each group of 10 levels has all difficulties
+  
+  // Use level number as seed for consistent difficulty assignment
+  const seed = levelNumber;
+  const random = new SeededRandom(seed);
+  
+  // Define difficulty weights for different level ranges
+  if (levelNumber <= 10) {
+    // Levels 1-10: Mostly easy, some medium, 1 hard
+    const weights = [70, 25, 5, 0]; // [easy, medium, hard, very-hard]
+    return selectDifficultyByWeight(weights, random);
+  } else if (levelNumber <= 20) {
+    // Levels 11-20: Mix of easy and medium, some hard
+    const weights = [40, 40, 20, 0];
+    return selectDifficultyByWeight(weights, random);
+  } else if (levelNumber <= 30) {
+    // Levels 21-30: Mix of medium and hard, some easy
+    const weights = [20, 40, 40, 0];
+    return selectDifficultyByWeight(weights, random);
+  } else if (levelNumber <= 40) {
+    // Levels 31-40: Mix of all difficulties, mostly medium/hard
+    const weights = [15, 35, 35, 15];
+    return selectDifficultyByWeight(weights, random);
+  } else if (levelNumber <= 50) {
+    // Levels 41-50: Mix of all difficulties, more hard/very-hard
+    const weights = [10, 25, 40, 25];
+    return selectDifficultyByWeight(weights, random);
+  } else {
+    // Levels 51+: Mix of all difficulties, more very-hard/expert
+    const weights = [5, 20, 35, 40];
+    const difficulty = selectDifficultyByWeight(weights, random);
+    // For very high levels, sometimes promote to expert
+    if (difficulty === 'very-hard' && random.next() > 0.7) {
+      return 'expert';
+    }
+    return difficulty;
+  }
+}
+
+/**
+ * Select difficulty based on weighted random selection
+ */
+function selectDifficultyByWeight(weights: number[], random: SeededRandom): keyof typeof DIFFICULTY_CONFIG {
+  const difficulties: (keyof typeof DIFFICULTY_CONFIG)[] = ['easy', 'medium', 'hard', 'very-hard'];
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  const randomValue = random.next() * totalWeight;
+  
+  let currentWeight = 0;
+  for (let i = 0; i < weights.length; i++) {
+    currentWeight += weights[i];
+    if (randomValue <= currentWeight) {
+      return difficulties[i];
+    }
   }
   
-  // Base difficulty tiers
-  if (levelNumber <= 10) return 'easy';
-  if (levelNumber <= 25) return 'medium';
-  if (levelNumber <= 50) return 'hard';
-  if (levelNumber <= 100) return 'very-hard';
-  return 'expert';
+  return 'easy'; // fallback
 }
 
 /**
- * Check if a level is a difficulty spike
+ * Get colors and empty tubes based on level number - simplified like watersortpuzzle
  */
-function isDifficultySpike(levelNumber: number): boolean {
-  // Every 3rd level starting from 4, 7, 10, etc.
-  return levelNumber % 3 === 1 && levelNumber >= 4;
-}
-
-/**
- * Get the spike difficulty for a level
- */
-function getSpikeDifficulty(levelNumber: number): keyof typeof DIFFICULTY_CONFIG {
-  if (levelNumber <= 10) {
-    // Levels 4, 7, 10 in easy tier get medium difficulty
-    return 'medium';
-  } else if (levelNumber <= 25) {
-    // Levels 13, 16, 19, 22, 25 in medium tier get hard difficulty
-    return 'hard';
-  } else if (levelNumber <= 50) {
-    // Levels 28, 31, 34, 37, 40, 43, 46, 49 in hard tier get very-hard difficulty
-    return 'very-hard';
-  } else if (levelNumber <= 100) {
-    // Levels 52, 55, 58, etc. in very-hard tier get expert difficulty
-    return 'expert';
-  } else {
-    // Beyond level 100, spikes get expert+ (same as expert but with more complexity)
-    return 'expert';
+function getLevelConfig(levelNumber: number): { colors: number; emptyTubes: number } {
+  // Like watersortpuzzle: x + 3 filled tubes + 2 empty tubes = x + 5 total tubes
+  // But we'll map this to our difficulty system
+  const difficulty = getDifficultyLevel(levelNumber);
+  const config = DIFFICULTY_CONFIG[difficulty];
+  
+  // For early levels, use a more linear progression like watersortpuzzle
+  if (levelNumber <= 8) {
+    const colors = Math.min(levelNumber + 2, 8); // Start with 3 colors, add 1 per level
+    return { colors, emptyTubes: 2 };
   }
+  
+  return { colors: config.colors, emptyTubes: config.emptyTubes };
 }
 
 /**
@@ -266,11 +299,11 @@ export function generateLevel(params: LevelGenerationParams): LevelConfig {
   
   const random = new SeededRandom(generateSeed(levelNumber, seed));
   const difficulty = getDifficultyLevel(levelNumber);
-  const config = DIFFICULTY_CONFIG[difficulty];
+  const levelConfig = getLevelConfig(levelNumber);
   
   // Use custom parameters or defaults
-  const colors = customColors || COLOR_PALETTE.slice(0, config.colors);
-  const emptyTubes = customEmptyTubes ?? config.emptyTubes;
+  const colors = customColors || COLOR_PALETTE.slice(0, levelConfig.colors);
+  const emptyTubes = customEmptyTubes ?? levelConfig.emptyTubes;
   
   // Generate liquids and distribute them
   let liquids = generateLiquids(colors, random);
@@ -296,7 +329,7 @@ export function generateLevel(params: LevelGenerationParams): LevelConfig {
     tubes,
     emptyTubes,
     difficulty,
-    moves: config.moves,
+    moves: DIFFICULTY_CONFIG[difficulty].moves,
     description
   };
 }

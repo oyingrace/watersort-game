@@ -41,14 +41,21 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
 
   const handleLevelComplete = () => {
     setGameWon(true);
+    // Level completed - no automatic progression
     // You can add celebration animation, sound effects, etc.
-    setTimeout(() => {
-      // Auto-advance to next level after 2 seconds
-      const nextLevel = levelNumber + 1;
-      if (nextLevel <= 1000) {
-        router.push(`/level/${nextLevel}`);
+    try {
+      if (typeof window !== 'undefined') {
+        const storageKey = 'highestUnlockedLevel';
+        const stored = window.localStorage.getItem(storageKey);
+        const highestUnlocked = stored ? parseInt(stored) : 1;
+        const nextLevelToUnlock = Math.min(levelNumber + 1, 1000);
+        if (!Number.isNaN(nextLevelToUnlock) && nextLevelToUnlock > highestUnlocked) {
+          window.localStorage.setItem(storageKey, String(nextLevelToUnlock));
+        }
       }
-    }, 2000);
+    } catch (_) {
+      // ignore storage errors (private mode, etc.)
+    }
   };
 
   const handleRestart = () => {
@@ -98,7 +105,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-primary-purple flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-b from-blue-100 to-blue-200 flex items-center justify-center">
       {/* Game Board */}
       <GameBoard 
         level={levelNumber}

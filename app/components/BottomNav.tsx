@@ -25,7 +25,7 @@ const BottomNav = () => {
                 className={`flex items-center justify-center p-3 rounded-2xl transition-all duration-300 ease-in-out ${
                   activeIndex === index
                     ? ' '
-                    : 'text-gray-400'
+                    : 'text-gray-800'
                 }`}
               >
                 <IconComponent 
@@ -43,7 +43,7 @@ const BottomNav = () => {
       </div>
       
       {/* Safe area for devices with bottom indicators */}
-      <div className="bg-white h-safe-bottom"></div>
+      <div className="bg-primary-purple h-safe-bottom"></div>
     </div>
   );
 };

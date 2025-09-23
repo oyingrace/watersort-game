@@ -280,7 +280,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComple
   const verticalOffset = Math.max(0, (containerSize.height - scaledBoardHeight) / 2);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 overflow-hidden">
+    <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden">
 
       <div ref={containerRef} className="relative w-full" style={{ height: 420, maxWidth: 720 }}>
         <div className="absolute left-1/2" style={{ width: boardWidth, height: boardHeight, top: verticalOffset, transform: `translateX(-50%) scale(${scale})`, transformOrigin: 'top center' }}>

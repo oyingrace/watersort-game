@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         'primary-purple': '#6A5AE0',
-        'secondary-purple': '#9087E5',
+			  'secondary-purple': '#9087E5',
       },
     },
   },
