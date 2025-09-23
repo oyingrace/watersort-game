@@ -1,10 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
 import { LevelConfig, TestTube } from '@/lib/levelGenerator';
 import TestTubeView, { TestTubeViewModel } from './TestTube';
 import { BOARD_LAYOUT, TUBE_DIMENSIONS, GAME_ANIM } from '@/lib/gameConstants';
 import { isValidPour, countPourableSegments } from '@/lib/gameHelpers';
+
+export interface GameBoardHandle {
+  undoLastMove: () => void;
+}
 
 interface GameBoardProps {
   level: number;
@@ -13,9 +17,10 @@ interface GameBoardProps {
   onMove?: () => void;
 }
 
-const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComplete, onMove }) => {
+const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ level, levelConfig, onLevelComplete, onMove }, ref) => {
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
   const [tubes, setTubes] = useState<TestTube[]>(levelConfig.tubes);
+  const [history, setHistory] = useState<TestTube[][]>([]);
   const [isTransferring, setIsTransferring] = useState(false);
   const [overrides, setOverrides] = useState<Record<number, Partial<TestTubeViewModel>>>({});
   const [drainOverlays, setDrainOverlays] = useState<Record<number, { startTopPx: number; heightPx: number } | null>>({});
@@ -29,6 +34,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComple
   React.useEffect(() => {
     setTubes(levelConfig.tubes);
     setSelectedTube(null);
+    setHistory([]);
   }, [levelConfig]);
 
   // Observe container size for responsiveness
@@ -46,6 +52,23 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComple
     setContainerSize({ width: el.clientWidth, height: el.clientHeight });
     return () => ro.disconnect();
   }, []);
+
+  // Expose undo API
+  useImperativeHandle(ref, () => ({
+    undoLastMove: () => {
+      setHistory(prev => {
+        if (prev.length === 0) return prev;
+        const nextHistory = [...prev];
+        const last = nextHistory.pop() as TestTube[];
+        setTubes(last.map(t => ({ id: t.id, liquids: t.liquids.map(l => ({ color: l.color, height: l.height })) })));
+        setSelectedTube(null);
+        setOverrides({});
+        setDrainOverlays({});
+        setFillOverlays({});
+        return nextHistory;
+      });
+    }
+  }), []);
 
   const computeTubePositions = (
     count: number,
@@ -152,6 +175,34 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComple
     isPouringRef.current = true;
 
     setIsTransferring(true);
+
+    // Precompute per-segment intermediate states for fine-grained undo
+    const baseState: TestTube[] = tubes.map(t => ({ id: t.id, liquids: t.liquids.map(l => ({ color: l.color, height: l.height })) }));
+    const intermediateStates: TestTube[][] = [];
+    if (pourCount > 0) {
+      let working: TestTube[] = baseState.map(t => ({ id: t.id, liquids: t.liquids.map(l => ({ color: l.color, height: l.height })) }));
+      const fromIdxWorking = working.findIndex(t => t.id === fromTubeId);
+      const toIdxWorking = working.findIndex(t => t.id === toTubeId);
+      for (let i = 0; i < pourCount; i++) {
+        const fromW = working[fromIdxWorking];
+        const toW = working[toIdxWorking];
+        const seg = fromW.liquids.pop();
+        if (seg) {
+          toW.liquids.push({ color: seg.color, height: seg.height });
+        }
+        // push a deep clone snapshot for this step
+        intermediateStates.push(
+          working.map(t => ({ id: t.id, liquids: t.liquids.map(l => ({ color: l.color, height: l.height })) }))
+        );
+      }
+      // Append snapshots so the last-in stack item is the immediate previous state (after k-1),
+      // followed by earlier steps and finally the original base state popped last.
+      setHistory(prev => [
+        ...prev,
+        baseState, // original state before the pour (popped last if multiple undos)
+        ...intermediateStates.slice(0, -1), // after step 1, after step 2, ..., after step k-1
+      ]);
+    }
 
     // Phase 1: move source near destination and tilt
     const nearLeft = toPos.leftPx - TUBE_DIMENSIONS.widthPx + 12;
@@ -312,6 +363,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ level, levelConfig, onLevelComple
       </div>
     </div>
   );
-};
+});
 
 export default GameBoard;

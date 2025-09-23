@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateLevel, LevelConfig } from '@/lib/levelGenerator';
-import GameBoard from '../components/GameBoard';
+import GameBoard, { GameBoardHandle } from '../components/GameBoard';
+import QuitLevelPopup from '../components/QuitLevelPopup';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
+import Reset from '../components/Reset';
+import UndoMove from '../components/UndoMove';
 
 interface LevelPageProps {
   params: Promise<{ id: string }>;
@@ -11,10 +16,12 @@ interface LevelPageProps {
 
 const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   const router = useRouter();
+  const boardRef = React.useRef<GameBoardHandle | null>(null);
   const [levelConfig, setLevelConfig] = useState<LevelConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [gameWon, setGameWon] = useState(false);
+  const [showQuit, setShowQuit] = useState(false);
 
   // unwrap params (Next.js: params is now a Promise)
   const unwrappedParams = React.use(params);
@@ -105,12 +112,39 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-blue-100 to-blue-200 flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-b from-blue-100 to-blue-200 flex items-center justify-center relative">
+      {/* Top-left Quit (X) button */}
+      <div className="absolute top-4 left-4 z-40">
+        <Button
+          type="button"
+          onClick={() => setShowQuit(true)}
+          className="h-10 w-10 p-0 font-bold rounded-xl bg-yellow-400 text-gray-800"
+          variant="outline"
+        >
+          <X size={20} />
+        </Button>
+      </div>
+
+      {/* Top-right controls */}
+      <div className="absolute top-4 right-4 z-40 flex gap-2">
+        <UndoMove onClick={() => boardRef.current?.undoLastMove()} />
+        <Reset onClick={handleRestart} />
+      </div>
+
       {/* Game Board */}
       <GameBoard 
+        ref={boardRef}
         level={levelNumber}
         levelConfig={levelConfig}
         onLevelComplete={handleLevelComplete}
+      />
+
+      {/* Quit Popup */}
+      <QuitLevelPopup
+        open={showQuit}
+        onPlayOn={() => setShowQuit(false)}
+        onQuit={() => router.push('/level')}
+        onClose={() => setShowQuit(false)}
       />
     </div>
   );
