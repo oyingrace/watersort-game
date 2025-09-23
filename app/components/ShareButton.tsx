@@ -12,7 +12,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ className = '', ...props }) =
   return (
     <Button
       type="button"
-      className={cn('bg-primary-purple text-white', className)}
+      className={cn('bg-yellow-400 font-semibold text-gray-800', className)}
       {...props}
     >
       <span className="flex items-center gap-2">

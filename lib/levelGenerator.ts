@@ -409,6 +409,24 @@ export function validateLevel(level: LevelConfig): { isValid: boolean; errors: s
 }
 
 /**
+ * Calculate coins earned for completing a level
+ */
+export function getCoinsEarned(levelNumber: number): number {
+  if (levelNumber >= 1 && levelNumber <= 5) return 20;
+  if (levelNumber >= 6 && levelNumber <= 10) return 25;
+  if (levelNumber >= 11 && levelNumber <= 15) return 30;
+  if (levelNumber >= 16 && levelNumber <= 20) return 35;
+  if (levelNumber >= 21 && levelNumber <= 25) return 40;
+  if (levelNumber >= 26 && levelNumber <= 30) return 45;
+  if (levelNumber >= 31 && levelNumber <= 35) return 50;
+  if (levelNumber >= 36 && levelNumber <= 40) return 55;
+  if (levelNumber >= 41 && levelNumber <= 45) return 60;
+  if (levelNumber >= 46 && levelNumber <= 50) return 65;
+  // For levels 51+, cap at 70 coins
+  return 70;
+}
+
+/**
  * Get level statistics
  */
 export function getLevelStats(level: LevelConfig): {

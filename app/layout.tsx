@@ -1,12 +1,31 @@
 import type { Metadata } from "next";
-import { Inter, Source_Code_Pro } from "next/font/google";
+import { Inter } from "next/font/google";
 import { RootProvider } from "./rootProvider";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const URL = process.env.NEXT_PUBLIC_URL;
   return {
-    title: "Water Sort Game",
-    description: "A fun water sorting puzzle game",
+    title: "Color-Water Sort Game",
+    description:
+      "A water color sort game",
+    other: {
+      "fc:frame": JSON.stringify({
+        version: "next",
+        imageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
+        button: {
+          title: `Launch ${process.env.NEXT_PUBLIC_PROJECT_NAME}`,
+          action: {
+            type: "launch_frame",
+            name: process.env.NEXT_PUBLIC_PROJECT_NAME,
+            url: URL,
+            splashImageUrl: process.env.NEXT_PUBLIC_SPLASH_IMAGE,
+            splashBackgroundColor:
+              process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
+          },
+        },
+      }),
+    },
   };
 }
 
@@ -15,10 +34,6 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const sourceCodePro = Source_Code_Pro({
-  variable: "--font-source-code-pro",
-  subsets: ["latin"],
-});
 
 export default function RootLayout({
   children,
@@ -28,7 +43,7 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
-        <body className={`${inter.variable} ${sourceCodePro.variable}`}>
+        <body className={`${inter.variable}`}>
           {children}
         </body>
       </html>

@@ -10,6 +10,7 @@ interface LevelWinProps {
   onShare?: () => void;
   onNext?: () => void;
   className?: string;
+  coinsEarned?: number;
 }
 
 const MESSAGES = [
@@ -35,7 +36,7 @@ const MESSAGES = [
   'Master!'
 ];
 
-export default function LevelWin({ onShare, onNext, className = '' }: LevelWinProps) {
+export default function LevelWin({ onShare, onNext, className = '', coinsEarned = 0 }: LevelWinProps) {
   const [message] = React.useState<string>(() => MESSAGES[Math.floor(Math.random() * MESSAGES.length)]);
   const [size, setSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [showConfetti, setShowConfetti] = React.useState<boolean>(true);
@@ -106,9 +107,25 @@ export default function LevelWin({ onShare, onNext, className = '' }: LevelWinPr
         >
           {message}
         </motion.h1>
+        {coinsEarned > 0 && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="flex items-center gap-1">
+              <span className="text-3xl font-bold text-primary-purple">{coinsEarned}</span>
+              <img src="/images/coin.png" alt="Coin" className="h-6 w-6" />
+            </div>
+            <span className="text-sm text-gray-600 font-medium">earned</span>
+          </motion.div>
+        )}
         <div className="flex items-center gap-3">
           <ShareButton onClick={onShare} />
-          <Button type="button" onClick={onNext} className="bg-yellow-400 text-gray-800 font-bold">
+          <Button
+          variant="outline"
+          type="button" onClick={onNext} className="border-yellow-400 bg-white text-gray-800 font-semibold">
             Next
           </Button>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { generateLevel, LevelConfig } from '@/lib/levelGenerator';
+import { generateLevel, LevelConfig, getCoinsEarned } from '@/lib/levelGenerator';
 import GameBoard, { GameBoardHandle } from '../components/GameBoard';
 import QuitLevelPopup from '../components/QuitLevelPopup';
 import { Button } from '@/components/ui/button';
@@ -148,6 +148,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       <LevelWin
         onShare={() => {}}
         onNext={handleNextLevel}
+        coinsEarned={getCoinsEarned(levelNumber)}
       />
     );
   }
