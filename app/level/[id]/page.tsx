@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import Reset from '../components/Reset';
 import UndoMove from '../components/UndoMove';
+import Hint from '../components/Hint';
 
 interface LevelPageProps {
   params: Promise<{ id: string }>;
@@ -22,6 +23,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   const [error, setError] = useState<string | null>(null);
   const [gameWon, setGameWon] = useState(false);
   const [showQuit, setShowQuit] = useState(false);
+  const [hintsLeft, setHintsLeft] = useState<number>(5);
 
   // unwrap params (Next.js: params is now a Promise)
   const unwrappedParams = React.use(params);
@@ -45,6 +47,28 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       setLoading(false);
     }
   }, [levelNumber]);
+
+  // Load global hints from localStorage
+  useEffect(() => {
+    try {
+      const stored = typeof window !== 'undefined' ? window.localStorage.getItem('globalHintsLeft') : null;
+      const parsed = stored ? parseInt(stored) : 5;
+      setHintsLeft(Number.isNaN(parsed) ? 5 : parsed);
+    } catch (_) {}
+  }, []);
+
+  const handleUseHint = () => {
+    if (hintsLeft <= 0) return;
+    const moved = boardRef.current?.performHintMove() ?? false;
+    if (!moved) return;
+    const next = hintsLeft - 1;
+    setHintsLeft(next);
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('globalHintsLeft', String(next));
+      }
+    } catch (_) {}
+  };
 
   const handleLevelComplete = () => {
     setGameWon(true);
@@ -129,6 +153,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       <div className="absolute top-4 right-4 z-40 flex gap-2">
         <UndoMove onClick={() => boardRef.current?.undoLastMove()} />
         <Reset onClick={handleRestart} />
+        <Hint onClick={handleUseHint} disabled={hintsLeft <= 0} remaining={hintsLeft} />
       </div>
 
       {/* Game Board */}

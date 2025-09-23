@@ -8,6 +8,7 @@ import { isValidPour, countPourableSegments } from '@/lib/gameHelpers';
 
 export interface GameBoardHandle {
   undoLastMove: () => void;
+  performHintMove: () => boolean; // returns true if a move was made
 }
 
 interface GameBoardProps {
@@ -53,7 +54,7 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ level, levelCon
     return () => ro.disconnect();
   }, []);
 
-  // Expose undo API
+  // Expose APIs
   useImperativeHandle(ref, () => ({
     undoLastMove: () => {
       setHistory(prev => {
@@ -67,6 +68,54 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ level, levelCon
         setFillOverlays({});
         return nextHistory;
       });
+    },
+    performHintMove: () => {
+      // Find all valid pours and score them
+      const candidates: { fromId: number; toId: number; score: number }[] = [];
+      for (const from of tubes) {
+        if (from.liquids.length === 0) continue;
+        for (const to of tubes) {
+          if (from.id === to.id) continue;
+          if (!isValidPour(from, to)) continue;
+          // Evaluate heuristic
+          const fromTopColor = from.liquids[from.liquids.length - 1].color;
+          const toTopColor = to.liquids[to.liquids.length - 1]?.color;
+          const toCount = to.liquids.length;
+          const available = TUBE_DIMENSIONS.segmentCount - toCount;
+          const contiguousFrom = countPourableSegments(from);
+          const willPour = Math.min(contiguousFrom, available);
+
+          // Clone destination to simulate
+          const destLiquids = to.liquids.map(l => ({ ...l }));
+          for (let i = 0; i < willPour; i++) destLiquids.push({ color: fromTopColor, height: 25 });
+
+          const completesTube = destLiquids.length === TUBE_DIMENSIONS.segmentCount && destLiquids.every(l => l.color === fromTopColor);
+          const increasesRun = (() => {
+            let run = 1;
+            for (let i = destLiquids.length - 1; i > 0; i--) {
+              if (destLiquids[i].color === destLiquids[i - 1].color) run++;
+              else break;
+            }
+            return run;
+          })();
+          const toWasEmpty = toCount === 0;
+
+          let score = 0;
+          if (completesTube) score += 1000;
+          score += increasesRun * 10;
+          if (toWasEmpty) score += 5;
+          // Prefer moves that pour more segments (progress) but cap weight
+          score += Math.min(willPour, 4);
+
+          candidates.push({ fromId: from.id, toId: to.id, score });
+        }
+      }
+
+      if (candidates.length === 0) return false;
+      candidates.sort((a, b) => b.score - a.score);
+      const best = candidates[0];
+      pourLiquid(best.fromId, best.toId);
+      return true;
     }
   }), []);
 
