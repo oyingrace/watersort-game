@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import styles from './test-tube.module.css';
 import { TUBE_DIMENSIONS } from '@/lib/gameConstants';
 
@@ -26,6 +27,23 @@ interface Props {
 }
 
 const TestTube: React.FC<Props> = ({ tube, onClick, drainOverlay, fillOverlay, isSelected, isTransferring }) => {
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [prevLiquidsLength, setPrevLiquidsLength] = useState(tube.liquids.length);
+
+  // Check if tube is completely filled with same color
+  const isCompletelyFilled = tube.liquids.length === 4 && 
+    tube.liquids.every(liquid => liquid.color === tube.liquids[0].color);
+
+  // Trigger confetti when tube gets completely filled
+  useEffect(() => {
+    if (isCompletelyFilled && tube.liquids.length === 4 && prevLiquidsLength < 4) {
+      setShowConfetti(true);
+      // Hide confetti after animation
+      setTimeout(() => setShowConfetti(false), 2000);
+    }
+    setPrevLiquidsLength(tube.liquids.length);
+  }, [tube.liquids.length, isCompletelyFilled, prevLiquidsLength]);
+
   return (
     <div
       className={styles.tube}
@@ -70,6 +88,42 @@ const TestTube: React.FC<Props> = ({ tube, onClick, drainOverlay, fillOverlay, i
             background: fillOverlay.color,
           }}
         />
+      )}
+
+      {/* Confetti rope animation when tube is completely filled */}
+      {showConfetti && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-8 bg-gradient-to-b from-yellow-400 via-pink-400 to-blue-400 rounded-full"
+              style={{
+                left: '50%',
+                top: '10px',
+                transformOrigin: 'bottom center',
+              }}
+              initial={{
+                x: -4,
+                y: 0,
+                rotate: (i - 4) * 15,
+                scaleY: 0,
+                opacity: 1,
+              }}
+              animate={{
+                x: (i - 4) * 8,
+                y: -60,
+                rotate: (i - 4) * 25,
+                scaleY: 1,
+                opacity: 0,
+              }}
+              transition={{
+                duration: 1.5,
+                delay: i * 0.05,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

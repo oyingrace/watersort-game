@@ -460,3 +460,46 @@ export function getLevelStats(level: LevelConfig): {
     difficultyScore
   };
 }
+
+/**
+ * Badge definitions and helpers
+ */
+export type Badge =
+  | 'Novice'
+  | 'Apprentice'
+  | 'Adventurer'
+  | 'Challenger'
+  | 'Seeker'
+  | 'Explorer'
+  | 'Warrior'
+  | 'Champion'
+  | 'Hero'
+  | 'Guardian';
+
+const BADGE_THRESHOLDS: Array<{ min: number; max: number; badge: Badge }> = [
+  { min: 1, max: 10, badge: 'Novice' },
+  { min: 11, max: 20, badge: 'Apprentice' },
+  { min: 21, max: 30, badge: 'Adventurer' },
+  { min: 31, max: 40, badge: 'Challenger' },
+  { min: 41, max: 50, badge: 'Seeker' },
+  { min: 51, max: 60, badge: 'Explorer' },
+  { min: 61, max: 70, badge: 'Warrior' },
+  { min: 71, max: 80, badge: 'Champion' },
+  { min: 81, max: 90, badge: 'Hero' },
+  { min: 91, max: 100, badge: 'Guardian' },
+];
+
+/**
+ * Returns the badge for a given level, or null if out of defined bounds
+ */
+export function getBadgeForLevel(levelNumber: number): Badge | null {
+  const entry = BADGE_THRESHOLDS.find(t => levelNumber >= t.min && levelNumber <= t.max);
+  return entry ? entry.badge : null;
+}
+
+/**
+ * Returns all badges unlocked up to and including the provided level
+ */
+export function getUnlockedBadgesUntil(levelNumber: number): Badge[] {
+  return BADGE_THRESHOLDS.filter(t => levelNumber >= t.max).map(t => t.badge);
+}

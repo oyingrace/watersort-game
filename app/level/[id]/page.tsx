@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { generateLevel, LevelConfig, getCoinsEarned } from '@/lib/levelGenerator';
+import { generateLevel, LevelConfig, getCoinsEarned, getBadgeForLevel } from '@/lib/levelGenerator';
 import GameBoard, { GameBoardHandle } from '../components/GameBoard';
 import QuitLevelPopup from '../components/QuitLevelPopup';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import UndoMove from '../components/UndoMove';
 import Hint from '../components/Hint';
 import Loader from '@/app/components/Loader';
 import LevelWin from '../components/LevelWin';
+import BadgeEarned from '../components/BadgeEarned';
 
 interface LevelPageProps {
   params: Promise<{ id: string }>;
@@ -27,6 +28,7 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
   const [showQuit, setShowQuit] = useState(false);
   const [hintsLeft, setHintsLeft] = useState<number>(5);
   const [undosLeft, setUndosLeft] = useState<number>(5);
+  const [showBadgeEarned, setShowBadgeEarned] = useState(false);
 
   // unwrap params (Next.js: params is now a Promise)
   const unwrappedParams = React.use(params);
@@ -44,6 +46,12 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
       setLevelConfig(config);
       setGameWon(false);
       setUndosLeft(5);
+      
+      // Check if this level unlocks a badge (milestone levels: 10, 20, 30, etc.)
+      const badge = getBadgeForLevel(levelNumber);
+      if (badge && levelNumber % 10 === 0) {
+        setShowBadgeEarned(true);
+      }
     } catch (err) {
       setError('Failed to generate level');
       console.error('Level generation error:', err);
@@ -125,6 +133,13 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
     router.push('/level');
   };
 
+  const handleMintBadge = async () => {
+    // TODO: Implement badge minting logic
+    console.log('Minting badge for level:', levelNumber);
+    // Simulate minting delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -188,6 +203,14 @@ const LevelPage: React.FC<LevelPageProps> = ({ params }) => {
         onPlayOn={() => setShowQuit(false)}
         onQuit={() => router.push('/level')}
         onClose={() => setShowQuit(false)}
+      />
+
+      {/* Badge Earned Popup */}
+      <BadgeEarned
+        isOpen={showBadgeEarned}
+        onClose={() => setShowBadgeEarned(false)}
+        onMint={handleMintBadge}
+        levelNumber={levelNumber}
       />
     </div>
   );
