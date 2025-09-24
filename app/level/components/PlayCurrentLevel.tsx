@@ -47,11 +47,11 @@ export default function PlayCurrentLevel() {
 
   return (
     <div className="fixed inset-0 z-[9999]" onClick={() => setIsOpen(false)}>
-      <div className="absolute inset-0 flex items-center justify-center px-4" onClick={(e) => e.stopPropagation()}>
-        <div className="relative w-full">
+      <div className="absolute inset-0 flex items-center justify-center px-4">
+        <div className="relative w-full" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => setIsOpen(false)}
-            className="absolute -top-3 -right-3 bg-yellow-400 rounded-xl p-2 hover:bg-yellow-500 transition-colors shadow-md"
+            className="absolute -top-3 -right-3 bg-yellow-400 rounded-xl p-2 hover:bg-yellow-500 transition-colors shadow-md z-10"
           >
             <X className="w-5 h-5 text-gray-800" />
           </button>

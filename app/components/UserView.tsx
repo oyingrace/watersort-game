@@ -122,7 +122,7 @@ const UserView: React.FC<UserViewProps> = ({
               <p className="text-sm text-gray-500">{username}</p>
             </div>
             <div className="w-full flex justify-center items-center gap-3 mb-4">
-              <Card className="font-semibold border-primary-purple text-gray-800 px-2 py-2 text-sm">
+              <Card className="font-semibold border-primary-purple text-gray-800 px-2 py-1 text-sm">
                 #{rank}
               </Card>
               <CoinsOwned amount={coins} />
