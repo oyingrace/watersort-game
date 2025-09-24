@@ -1,0 +1,9 @@
+[
+    { "rank": 1, "username": "@john", "coinss": 5555, "profileSrc": "/images/smiley.webp" },
+    { "rank": 2, "username": "@ken", "coins": 4444, "profileSrc": "/images/smiley.webp" },
+    { "rank": 3, "username": "@don", "coins": 3333, "profileSrc": "/images/smiley.webp" },
+    { "rank": 4, "username": "@madelyn", "coins": 3333, "profileSrc": "/images/smiley.webp" },
+    { "rank": 5, "username": "@zain", "coins": 3333, "profileSrc": "/images/smiley.webp" }
+  ]
+  
+  

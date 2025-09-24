@@ -1,6 +1,6 @@
 "use client";
 import RankCard from "./RankCard";
-import data from "./WeeklyRankers.json";
+import data from "./AllTimeRankers.json";
 
 export default function AllTime() {
     return (
