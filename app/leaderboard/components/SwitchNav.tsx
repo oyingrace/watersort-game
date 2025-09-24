@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import Weekly from "./Weekly";
+import AllTime from "./AllTime";
 
 export default function SwitchNav() {
     const [active, setActive] = useState<"weekly" | "all-time">("weekly");
@@ -38,6 +40,9 @@ export default function SwitchNav() {
                 >
                     All Time
                 </Button>
+            </div>
+            <div className="mt-4">
+                {isWeekly ? <Weekly /> : <AllTime />}
             </div>
         </div>
     );

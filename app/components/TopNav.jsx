@@ -35,7 +35,13 @@ const TopNav = () => {
                 className="transition-transform duration-200 hover:scale-105 active:scale-95"
                 aria-label="Open user profile"
               >
-                <ProfileImage/>
+                <span className="relative inline-block">
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -inset-1 rounded-2xl bg-primary-purple/60 ring-2 ring-primary-purple/40 motion-safe:animate-[ping_2s_ease-out_infinite]"
+                  ></span>
+                  <ProfileImage className="relative z-10"/>
+                </span>
               </button>
             </div>
             

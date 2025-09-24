@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 
@@ -24,7 +25,7 @@ const BadgeCard = ({
     <Card
       className={`bg-transparent border border-primary-purple rounded-2xl p-3 flex items-center justify-center ${sizeClasses[size]} ${className}`}
     >
-      <img src={src} alt={alt} className="max-w-full max-h-full object-contain" />
+      <img src={src} alt={alt} loading="lazy" className="max-w-full max-h-full object-contain" />
     </Card>
   );
 };

@@ -1,16 +1,27 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ListTodo, Trophy, Map } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 
 const BottomNav = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const navItems = [
-    { id: 0, icon: ListTodo },
-    { id: 1, icon: Map },
-    { id: 2, icon: Trophy }
-  ];
+  const navItems = useMemo(() => ([
+    { id: 0, icon: ListTodo, href: '/tasks', label: 'Tasks' },
+    { id: 1, icon: Map, href: '/level', label: 'Levels' },
+    { id: 2, icon: Trophy, href: '/leaderboard', label: 'Leaderboard' }
+  ]), []);
+
+  useEffect(() => {
+    if (!pathname) return;
+    const found = navItems.findIndex(item => pathname.startsWith(item.href));
+    if (found !== -1) {
+      setActiveIndex(found);
+    }
+  }, [pathname, navItems]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 w-full overflow-x-hidden pb-4">
@@ -21,12 +32,13 @@ const BottomNav = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => { setActiveIndex(index); router.push(item.href); }}
                 className={`flex items-center justify-center p-3 rounded-2xl transition-all duration-300 ease-in-out ${
                   activeIndex === index
                     ? ' '
                     : 'text-gray-800'
                 }`}
+                aria-label={item.label}
               >
                 <IconComponent 
                   size={24} 
