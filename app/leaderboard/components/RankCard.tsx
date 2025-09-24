@@ -19,7 +19,7 @@ export default function RankCard({ rank, username, coins, profileSrc, className 
     const medal = medalByRank[rank];
 
     return (
-        <Card className={`flex items-center gap-4 p-4 rounded-2xl border-0 bg-white ${className}`}>
+        <Card className={`flex items-center gap-4 px-4 py-2 rounded-2xl border-0 bg-white ${className}`}>
             <div className="flex items-center justify-center w-10 h-10 rounded-full text-gray-500 font-semibold">
                 {rank}
             </div>

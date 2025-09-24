@@ -17,7 +17,7 @@ const ProfileImage = ({
 }: ProfileImageProps) => {
   const sizeClasses = {
     sm: 'w-10 h-10',
-    md: 'w-14 h-14', 
+    md: 'w-12 h-12', 
     lg: 'w-24 h-24'
   };
 

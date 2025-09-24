@@ -25,7 +25,7 @@ const BottomNav = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 w-full overflow-x-hidden pb-4">
-      <div className="mx-4 bg-white shadow-2xl rounded-[2rem] pt-4 pb-4 px-4">
+      <div className="mx-4 bg-white shadow-2xl rounded-[2rem] pt-2 pb-2 px-4">
         <div className="flex justify-around items-center max-w-md mx-auto">
           {navItems.map((item, index) => {
             const IconComponent = item.icon;

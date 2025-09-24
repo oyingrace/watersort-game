@@ -31,8 +31,8 @@ const LevelMap = ({ currentLevel = 1 }: { currentLevel?: number }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-40 pt-[max(80px,calc(env(safe-area-inset-top)+60px))] pb-[max(80px,calc(env(safe-area-inset-bottom)+60px))]">
-      <Card className="w-[400px] max-w-[90vw] max-h-[80vh] bg-secondary-purple shadow-2xl">
+    <div className="fixed inset-0 flex items-center justify-center z-40 pt-32 pb-24 md:pt-[max(80px,calc(env(safe-area-inset-top)+60px))] md:pb-[max(80px,calc(env(safe-area-inset-bottom)+60px))]">
+      <Card className="w-[400px] max-w-[92vw] max-h-[85svh] md:max-h-[80vh] bg-secondary-purple shadow-2xl">
         <CardHeader className="pb-4 relative flex justify-center items-center">
           <h2 className="bg-primary-purple text-white text-xl py-2 px-3 rounded-lg shadow-lg text-center border-2 border-primary-purple w-fit">
             Level Select
@@ -40,7 +40,7 @@ const LevelMap = ({ currentLevel = 1 }: { currentLevel?: number }) => {
         </CardHeader>
         
         <CardContent className="px-6 pb-6">
-          <div className="max-h-[500px] overflow-y-auto bg-secondary-purple rounded-lg p-4 border-2 border-primary-yellow scrollbar-hide">
+          <div className="max-h-[60svh] md:max-h-[500px] overflow-y-auto bg-secondary-purple rounded-lg p-4 border-2 border-primary-yellow scrollbar-hide">
             <div className="grid grid-cols-5 gap-3 gap-y-4">
               {levels.map((level) => {
                 const isUnlocked = level <= highestUnlocked;

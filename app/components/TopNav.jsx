@@ -17,7 +17,7 @@ const TopNav = () => {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-        <div className="bg-white shadow-2xl rounded-[2rem] pt-4 pb-4 px-6">
+        <div className="bg-white shadow-2xl rounded-[2rem] pt-2 pb-2 px-6">
           <div className="flex justify-between items-center max-w-md mx-auto">
             {/* Left side - user leaderboard rank number */}
             <div className="flex-shrink-0">
