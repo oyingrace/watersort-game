@@ -1,9 +1,9 @@
 [
-    { "rank": 1, "name": "Davis Curtis", "coinss": 2569, "profileSrc": "/images/smiley.webp" },
-    { "rank": 2, "name": "Alena Donin", "coins": 1469, "profileSrc": "/images/smiley.webp" },
-    { "rank": 3, "name": "Craig Gouse", "coins": 1053, "profileSrc": "/images/smiley.webp" },
-    { "rank": 4, "name": "Madelyn Dias", "coins": 590, "profileSrc": "/images/smiley.webp" },
-    { "rank": 5, "name": "Zain Vaccaro", "coins": 448, "profileSrc": "/images/smiley.webp" }
+    { "rank": 1, "username": "@davis", "coinss": 2569, "profileSrc": "/images/smiley.webp" },
+    { "rank": 2, "username": "@alena", "coins": 1469, "profileSrc": "/images/smiley.webp" },
+    { "rank": 3, "username": "@craig", "coins": 1053, "profileSrc": "/images/smiley.webp" },
+    { "rank": 4, "username": "@madelyn", "coins": 590, "profileSrc": "/images/smiley.webp" },
+    { "rank": 5, "username": "@zain", "coins": 448, "profileSrc": "/images/smiley.webp" }
   ]
   
   

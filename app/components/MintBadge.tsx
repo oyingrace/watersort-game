@@ -42,7 +42,7 @@ const MintBadge: React.FC<MintBadgeProps> = ({ onMint, className = '', disabled 
           ? 'bg-green-500 text-white hover:bg-green-600' 
           : isMinting 
             ? 'bg-blue-500 text-white hover:bg-blue-600' 
-            : 'bg-purple-500 text-white hover:bg-purple-600'
+            : 'bg-yellow-400 text-gray-800 hover:bg-yellow-400'
       } ${className}`}
       variant="outline"
     >

@@ -10,7 +10,7 @@ export default function Weekly() {
 				<RankCard
 					key={user.rank}
 					rank={user.rank}
-					name={user.name}
+					username={user.username}
 					coins={user.coins || 0}
 					profileSrc={user.profileSrc}
 					className="shadow"

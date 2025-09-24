@@ -3,9 +3,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
 import { Badge, getBadgeForLevel } from '@/lib/levelGenerator';
 import MintBadge from '@/app/components/MintBadge';
+import BadgeCard from '@/app/components/BadgeCard';
 
 interface BadgeEarnedProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface BadgeEarnedProps {
   levelNumber: number;
 }
 
-// Map badge names to image filenames
+
 const BADGE_IMAGE_MAP: Record<Badge, string> = {
   'Novice': 'novice.png',
   'Apprentice': 'apprentice.png',
@@ -63,11 +63,9 @@ const BadgeEarned: React.FC<BadgeEarnedProps> = ({ isOpen, onClose, onMint, leve
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 className="mb-6"
               >
-                <img
-                  src={`/badges/${badgeImage}`}
-                  alt={`${badge} Badge`}
-                  className="w-32 h-32 mx-auto object-contain"
-                />
+                <div className="flex justify-center">
+                  <BadgeCard src={`/badges/${badgeImage}`} alt={`${badge} Badge`} size="lg" />
+                </div>
               </motion.div>
 
               {/* Description */}

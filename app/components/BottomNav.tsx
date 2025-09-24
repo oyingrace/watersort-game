@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Play, ListTodo, Trophy } from 'lucide-react';
+import { ListTodo, Trophy, Map } from 'lucide-react';
 
 const BottomNav = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const navItems = [
     { id: 0, icon: ListTodo },
-    { id: 1, icon: Play },
+    { id: 1, icon: Map },
     { id: 2, icon: Trophy }
   ];
 
