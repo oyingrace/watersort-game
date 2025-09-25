@@ -21,9 +21,9 @@ export default function SwitchNav() {
                     variant={isWeekly ? "secondary" : "ghost"}
                     className={
                         (isWeekly
-                            ? "text-white text-xl bg-secondary-purple border border-secondary-purple"
-                            : "text-secondary-purple hover:text-white hover:bg-secondary-purple text-xl") +
-                        " rounded-xl px-8 h-9"
+                            ? "text-white bg-secondary-purple border border-secondary-purple"
+                            : "text-secondary-purple hover:text-white hover:bg-secondary-purple") +
+                        " rounded-xl px-4 h-6"
                     }
                 >
                     Weekly
@@ -33,9 +33,9 @@ export default function SwitchNav() {
                     variant={isAllTime ? "secondary" : "ghost"}
                     className={
                         (isAllTime
-                            ? "text-white text-xl bg-secondary-purple border border-secondary-purple"
-                            : "text-secondary-purple hover:text-white hover:bg-secondary-purple text-xl") +
-                        " rounded-xl px-8 h-9"
+                            ? "text-white bg-secondary-purple border border-secondary-purple"
+                            : "text-secondary-purple hover:text-white hover:bg-secondary-purple") +
+                        " rounded-xl px-4 h-6"
                     }
                 >
                     All Time
