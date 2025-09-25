@@ -29,10 +29,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+
+// Suppress hydration warnings from browser extensions 
+const suppressHydrationWarning = process.env.NODE_ENV === 'development';
+
 
 
 export default function RootLayout({
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
-        <body className={`${inter.variable}`}>
+        <body suppressHydrationWarning={suppressHydrationWarning}>
           {children}
         </body>
       </html>
