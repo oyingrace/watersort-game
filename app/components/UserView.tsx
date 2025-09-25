@@ -8,6 +8,7 @@ import BadgeCard from "./BadgeCard";
 import BadgeEarned from "@/app/level/components/BadgeEarned";
 import { Lock } from "lucide-react";
 import { getUnlockedBadgesUntil, type Badge } from "@/lib/levelGenerator";
+import { useFarcasterProfile } from "@/lib/useFarcasterProfile";
 
 interface UserViewProps {
   children?: React.ReactNode;
@@ -25,13 +26,17 @@ const UserView: React.FC<UserViewProps> = ({
   children,
   className = "",
   onClose,
-  displayName = "User",
-  username = "@user",
+  displayName,
+  username,
   profileSrc,
   coins = 1250,
   rank = 1,
   userLevel = 1,
 }) => {
+  const { profile } = useFarcasterProfile();
+  const resolvedDisplayName = displayName ?? profile.displayName ?? "User";
+  const resolvedUsername = username ?? (profile.username ? `@${profile.username}` : "@user");
+  const resolvedProfileSrc = profileSrc ?? profile.pfpUrl;
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (onClose) onClose();
   };
@@ -113,13 +118,13 @@ const UserView: React.FC<UserViewProps> = ({
           {/* Scrollable content area */}
           <div className="h-full overflow-y-auto scrollbar-hide px-4 pb-4">
             <div className="w-full flex justify-center pt-4 pb-2">
-              <ProfileImage size="lg" src={profileSrc} />
+              <ProfileImage size="lg" src={resolvedProfileSrc} />
             </div>
             <div className="w-full text-center mb-4">
               <p className="text-lg font-semibold text-gray-900">
-                {displayName}
+                {resolvedDisplayName}
               </p>
-              <p className="text-sm text-gray-500">{username}</p>
+              <p className="text-sm text-gray-500">{resolvedUsername}</p>
             </div>
             <div className="w-full flex justify-center items-center gap-3 mb-4">
               <Card className="font-semibold border-primary-purple text-gray-800 px-2 py-1 text-sm">

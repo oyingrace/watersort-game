@@ -1,6 +1,8 @@
+"use client";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { User } from 'lucide-react';
+import { useFarcasterProfile } from '@/lib/useFarcasterProfile';
 
 interface ProfileImageProps {
   src?: string;
@@ -27,13 +29,17 @@ const ProfileImage = ({
     lg: 32
   };
 
+  const { profile } = useFarcasterProfile();
+  const finalSrc = src || profile.pfpUrl;
+  const finalAlt = (profile.username ? profile.username : alt) || 'profile';
+
   return (
     <Card className={`${sizeClasses[size]} bg-purple-300 rounded-lg border-0 shadow-sm flex items-center justify-center p-0 ${className}`}>
-      {src ? (
+      {finalSrc ? (
         <img 
-          src={src} 
-          alt={alt}
-          className="w-full h-full object-cover rounded-lg"
+         src={finalSrc}
+         alt={finalAlt}
+         className="w-full h-full object-cover rounded-lg"
         />
       ) : (
         <User size={iconSizes[size]} className="text-yellow-700" />

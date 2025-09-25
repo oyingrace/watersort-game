@@ -1,10 +1,11 @@
 "use client";
 import { ReactNode } from "react";
+import { Providers } from "./providers";
 
 export function RootProvider({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <Providers>
       {children}
-    </div>
+    </Providers>
   );
 }
