@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
 import ClientFrameReady from "./ready";
+import BootstrapIdentity from "./components/BootstrapIdentity";
 
 export async function generateMetadata(): Promise<Metadata> {
   const URL = process.env.NEXT_PUBLIC_URL;
@@ -45,6 +46,7 @@ export default function RootLayout({
       <html lang="en">
         <body suppressHydrationWarning={suppressHydrationWarning}>
           <ClientFrameReady />
+          <BootstrapIdentity />
           {children}
         </body>
       </html>
