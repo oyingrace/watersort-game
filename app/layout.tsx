@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
-import ClientFrameReady from "./ready";
 import BootstrapIdentity from "./components/BootstrapIdentity";
 import DebugMiniApp from "./components/DebugMiniApp";
 
@@ -46,9 +45,8 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={suppressHydrationWarning}>
         <Providers>
-          <ClientFrameReady />
-          <DebugMiniApp />
-         {/*  <BootstrapIdentity /> */}
+          {/* <DebugMiniApp /> */}
+          <BootstrapIdentity />
           {children}
         </Providers>
       </body>
