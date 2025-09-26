@@ -14,7 +14,14 @@ export async function POST(req: Request) {
     const username = typeof usernameRaw === 'string' ? usernameRaw : null;
     const pfp_url = typeof pfpUrlRaw === 'string' ? pfpUrlRaw : null;
 
+    // Basic env sanity logs (without revealing secrets)
+    const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    const hasAnon = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    const hasService = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.debug('[Upsert] env:', { hasUrl, hasAnon, hasService });
+
     if (!address && !fid) {
+      console.warn('[Upsert] Missing address/fid');
       return NextResponse.json({ ok: false, error: 'address or fid required' }, { status: 400 });
     }
 
@@ -44,6 +51,9 @@ export async function POST(req: Request) {
           .insert({ fid, address, username, pfp_url })
           .select('id')
           .single();
+        if (error) {
+          console.error('[Upsert] insert by fid error:', error);
+        }
         if (!error && inserted?.id) userId = inserted.id;
       }
     }
@@ -68,11 +78,15 @@ export async function POST(req: Request) {
           .insert({ address, fid, username, pfp_url })
           .select('id')
           .single();
+        if (error) {
+          console.error('[Upsert] insert by address error:', error);
+        }
         if (!error && inserted?.id) userId = inserted.id;
       }
     }
 
     if (!userId) {
+      console.error('[Upsert] could not resolve userId');
       return NextResponse.json({ ok: false }, { status: 500 });
     }
 
@@ -83,6 +97,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (e) {
+    console.error('[Upsert] fatal error:', e);
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 }

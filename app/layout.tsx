@@ -3,6 +3,7 @@ import { Providers } from "./providers";
 import "./globals.css";
 import ClientFrameReady from "./ready";
 import BootstrapIdentity from "./components/BootstrapIdentity";
+import DebugMiniApp from "./components/DebugMiniApp";
 
 export async function generateMetadata(): Promise<Metadata> {
   const URL = process.env.NEXT_PUBLIC_URL;
@@ -42,14 +43,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Providers>
-      <html lang="en">
-        <body suppressHydrationWarning={suppressHydrationWarning}>
+    <html lang="en">
+      <body suppressHydrationWarning={suppressHydrationWarning}>
+        <Providers>
           <ClientFrameReady />
-          <BootstrapIdentity />
+          <DebugMiniApp />
+         {/*  <BootstrapIdentity /> */}
           {children}
-        </body>
-      </html>
-    </Providers>
+        </Providers>
+      </body>
+    </html>
   );
 }

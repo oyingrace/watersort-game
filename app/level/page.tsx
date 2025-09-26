@@ -6,7 +6,7 @@ import PlayCurrentLevel from "./components/PlayCurrentLevel";
 export default function LevelPage() {
     return (
         <div className="min-h-screen w-full bg-primary-purple overflow-x-hidden">
-            <TopNav />
+            {/*  <TopNav />  */}
             <PlayCurrentLevel />
             <LevelMap />
             <BottomNav />

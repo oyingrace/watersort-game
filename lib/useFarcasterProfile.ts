@@ -43,6 +43,17 @@ export function useFarcasterProfile(): { profile: FarcasterProfile; address?: st
     };
   }, [isInMiniApp, context?.user]);
 
+  // Debug logging for Mini App detection and profile extraction
+  useEffect(() => {
+    try {
+      // Keep logs concise to avoid leaking sensitive data
+      console.debug('[MiniApp] isInMiniApp:', isInMiniApp);
+      console.debug('[MiniApp] hasContextUser:', Boolean(context?.user));
+      console.debug('[MiniApp] derived fid:', (profile as any)?.fid);
+      console.debug('[Wallet] address present:', Boolean(address));
+    } catch {}
+  }, [isInMiniApp, context?.user, (profile as any)?.fid, address]);
+
   return { profile, address };
 }
 
